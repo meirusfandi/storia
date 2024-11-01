@@ -9,6 +9,7 @@ import 'package:storia/core/utils/color_widget.dart';
 import 'package:storia/core/utils/container_widget.dart';
 import 'package:storia/core/utils/text_widget.dart';
 import 'package:storia/core/utils/toast.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LanguageDialog extends StatefulWidget {
   final String lang;
@@ -51,7 +52,7 @@ class LanguageDialogState extends State<LanguageDialog> {
       if (!state.isLoading && state.onUpdateLang) {
         context.router.maybePop().then((_) => widget.callback(_onDataCheck));
       } else if (!state.isLoading && !state.onUpdateLang) {
-        showError(context, "Terjadi Kesalahan, Silahkan coba kembali");
+        showError(context, AppLocalizations.of(context)?.general_error ?? '');
       }
     }, builder: (context, state) {
       return BottomDrawer(
@@ -110,7 +111,7 @@ class LanguageDialogState extends State<LanguageDialog> {
                           ),
                         )
                       : TextWidget.manropeSemiBold(
-                          "Simpan",
+                          AppLocalizations.of(context)?.general_save ?? '',
                           color: Colors.white,
                           size: 16,
                           textAlign: TextAlign.center,

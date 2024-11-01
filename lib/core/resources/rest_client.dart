@@ -16,7 +16,6 @@ part 'rest_client.g.dart';
 abstract class RestClient {
   factory RestClient(Dio dio, {String baseUrl}) = _RestClient;
 
-  // auth service
   @POST('login')
   Future<LoginResponse> doLogin(@Body() LoginRequest request);
 

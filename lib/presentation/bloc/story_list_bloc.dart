@@ -14,7 +14,8 @@ class StoryListBloc extends Bloc<StoryListEvent, StoryListState> {
     on<ListMoreEvent>(_doGetMoreStory);
   }
 
-  Future<void> _doGetStory(ListEvent event, Emitter<StoryListState> emit) async {
+  Future<void> _doGetStory(
+      ListEvent event, Emitter<StoryListState> emit) async {
     try {
       emit(const StoryListState.noValue());
       final result = await getListStory(StoryParams(
@@ -33,7 +34,8 @@ class StoryListBloc extends Bloc<StoryListEvent, StoryListState> {
     }
   }
 
-  Future<void> _doGetMoreStory(ListMoreEvent event, Emitter<StoryListState> emit) async {
+  Future<void> _doGetMoreStory(
+      ListMoreEvent event, Emitter<StoryListState> emit) async {
     try {
       emit(state.copyWith(isLoadingMore: true));
       final result = await getListStory(StoryParams(
@@ -42,7 +44,7 @@ class StoryListBloc extends Bloc<StoryListEvent, StoryListState> {
         emit(state.copyWith(
           isLoadingMore: false,
           errorMessage:
-          (l as StoryFailure).exception?.response?.data['message'],
+              (l as StoryFailure).exception?.response?.data['message'],
         ));
       }, (r) {
         emit(state.copyWith(isLoadingMore: false, listEntity: r));

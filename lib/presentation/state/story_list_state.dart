@@ -7,7 +7,10 @@ class StoryListState extends Equatable {
   final StoryListEntity? listEntity;
 
   const StoryListState(
-      {this.errorMessage = '', this.isLoadingMore = false, this.isLoading = false, this.listEntity});
+      {this.errorMessage = '',
+      this.isLoadingMore = false,
+      this.isLoading = false,
+      this.listEntity});
 
   const StoryListState.noValue()
       : errorMessage = '',
@@ -16,7 +19,10 @@ class StoryListState extends Equatable {
         listEntity = null;
 
   StoryListState copyWith(
-      {bool? isLoading, bool? isLoadingMore, String? errorMessage, StoryListEntity? listEntity}) {
+      {bool? isLoading,
+      bool? isLoadingMore,
+      String? errorMessage,
+      StoryListEntity? listEntity}) {
     return StoryListState(
         isLoading: isLoading ?? this.isLoading,
         isLoadingMore: isLoadingMore ?? this.isLoadingMore,
@@ -25,5 +31,6 @@ class StoryListState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [isLoading, isLoadingMore, errorMessage, listEntity];
+  List<Object?> get props =>
+      [isLoading, isLoadingMore, errorMessage, listEntity];
 }

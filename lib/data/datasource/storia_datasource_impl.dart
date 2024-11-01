@@ -26,8 +26,7 @@ class StoriaDatasourceImpl implements StoriaDataSource {
       String storyId) async {
     final token = prefHelpers.getAccessToken ?? '';
     try {
-      final response =
-          await restClient.doGetDetailStories("Bearer $token", storyId);
+      final response = await restClient.doGetDetailStories(token, storyId);
       return Future.value(Right(response));
     } on DioException catch (e) {
       return Left(StoryFailure(exception: e));
@@ -67,7 +66,7 @@ class StoriaDatasourceImpl implements StoriaDataSource {
     final token = prefHelpers.getAccessToken ?? '';
     try {
       final response = await restClient.doGetStories(
-          "Bearer $token", request.page, request.size, request.location);
+          token, request.page, request.size, request.location);
       return Future.value(Right(response));
     } on DioException catch (e) {
       return Left(StoryFailure(exception: e));
@@ -83,7 +82,7 @@ class StoriaDatasourceImpl implements StoriaDataSource {
     try {
       final file = File(request.photo);
       final response = await restClient.doSubmitStory(
-          "Bearer $token", file, request.description, request.lat, request.lon);
+          token, file, request.description, request.lat, request.lon);
       return Future.value(Right(response));
     } on DioException catch (e) {
       return Left(FormStoryFailure(exception: e));

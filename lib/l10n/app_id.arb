@@ -43,5 +43,10 @@
     "story_welcome": "Selamat Datang, {name}",
     "story_empty_title": "Daftar Cerita Kosong",
     "story_empty_desc": "Daftar cerita kosong. Buat ceritamu dan tampilkan disini.",
-    "story_max_refresh": "Sudah mencapai batas halaman"
+    "story_max_refresh": "Sudah mencapai batas halaman",
+    "@GENERAL": {},
+    "general_save": "Simpan",
+    "general_error": "Terjadi Kesalahan, Silahkan coba kembali",
+    "general_bahasa": "Bahasa Indonesia",
+    "general_english": "Bahasa Inggris"
 }

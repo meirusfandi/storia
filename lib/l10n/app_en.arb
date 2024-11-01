@@ -43,5 +43,10 @@
     "story_welcome": "Welcome {name}",
     "story_empty_title": "Empty List Story",
     "story_empty_desc": "List Story is Empty. Create your story and will be show here",
-    "story_max_refresh": "Have reach maximum page"
+    "story_max_refresh": "Have reach maximum page",
+    "@GENERAL": {},
+    "general_save": "Save",
+    "general_error": "Something wrong, Please try again",
+    "general_bahasa": "Indonesian",
+    "general_english": "English"
 }

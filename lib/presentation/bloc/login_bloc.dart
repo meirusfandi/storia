@@ -28,7 +28,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
               (l as LoginFailure).exception?.response?.data['message'],
         ));
       }, (r) {
-        prefInstance.setString(PrefKey.token.name, r.loginResult.token);
+        prefInstance.setString(
+            PrefKey.token.name, "Bearer ${r.loginResult.token}");
         prefInstance.setString(PrefKey.userId.name, r.loginResult.userId);
         prefInstance.setString(PrefKey.userName.name, r.loginResult.name);
         emit(state.copyWith(isLoading: false, loginEntity: r));

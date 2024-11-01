@@ -70,7 +70,8 @@ class _MyAppState extends State<MyApp> {
       child: ScreenUtilInit(
         useInheritedMediaQuery: true,
         builder: (context, child) => MaterialApp.router(
-            debugShowCheckedModeBanner: FlavorConfig.instance.flavor == FlavorType.dev,
+            debugShowCheckedModeBanner:
+                FlavorConfig.instance.flavor == FlavorType.dev,
             locale: locale,
             localizationsDelegates: const [
               AppLocalizations.delegate,
