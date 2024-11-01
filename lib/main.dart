@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storia/core/config/bloc/config_bloc.dart';
+import 'package:storia/core/config/flavor/flavor_config.dart';
 import 'package:storia/core/helper/pref_helpers.dart';
 import 'package:storia/core/helper/pref_key.dart';
 import 'package:storia/core/resources/injection_container.dart';
@@ -69,7 +70,7 @@ class _MyAppState extends State<MyApp> {
       child: ScreenUtilInit(
         useInheritedMediaQuery: true,
         builder: (context, child) => MaterialApp.router(
-            debugShowCheckedModeBanner: false,
+            debugShowCheckedModeBanner: FlavorConfig.instance.flavor == FlavorType.dev,
             locale: locale,
             localizationsDelegates: const [
               AppLocalizations.delegate,

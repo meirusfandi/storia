@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:storia/core/config/flavor/flavor_config.dart';
 import 'package:storia/core/config/presentation/language_dialog.dart';
 import 'package:storia/core/helper/pref_helpers.dart';
 import 'package:storia/core/helper/pref_key.dart';
@@ -99,7 +100,7 @@ class _StoryPageState extends State<StoryPage> {
                 ],
               ),
               loading: state.isLoading && page == 1,
-              floatingActionButton: Container(
+              floatingActionButton: (FlavorConfig.instance.flavor == FlavorType.dev) ? const SizedBox() : Container(
                 decoration: const BoxDecoration(shape: BoxShape.circle),
                 child: FloatingActionButton(
                   backgroundColor: ColorWidget.primaryColor,
