@@ -10,10 +10,11 @@ part '../state/story_list_state.dart';
 class StoryListBloc extends Bloc<StoryListEvent, StoryListState> {
   final GetListStory getListStory;
   StoryListBloc({required this.getListStory}) : super(const StoryListState()) {
-    on<ListEvent>(_doLogin);
+    on<ListEvent>(_doGetStory);
+    on<ListMoreEvent>(_doGetMoreStory);
   }
 
-  Future<void> _doLogin(ListEvent event, Emitter<StoryListState> emit) async {
+  Future<void> _doGetStory(ListEvent event, Emitter<StoryListState> emit) async {
     try {
       emit(const StoryListState.noValue());
       final result = await getListStory(StoryParams(
@@ -29,6 +30,25 @@ class StoryListBloc extends Bloc<StoryListEvent, StoryListState> {
       });
     } catch (e) {
       emit(state.copyWith(isLoading: false));
+    }
+  }
+
+  Future<void> _doGetMoreStory(ListMoreEvent event, Emitter<StoryListState> emit) async {
+    try {
+      emit(state.copyWith(isLoadingMore: true));
+      final result = await getListStory(StoryParams(
+          page: event.page, size: event.size, location: event.location));
+      result.fold((l) {
+        emit(state.copyWith(
+          isLoadingMore: false,
+          errorMessage:
+          (l as StoryFailure).exception?.response?.data['message'],
+        ));
+      }, (r) {
+        emit(state.copyWith(isLoadingMore: false, listEntity: r));
+      });
+    } catch (e) {
+      emit(state.copyWith(isLoadingMore: false));
     }
   }
 }

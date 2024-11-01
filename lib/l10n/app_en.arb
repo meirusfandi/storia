@@ -42,5 +42,6 @@
     "story_form_input_desc_placeholder": "Enter your description",
     "story_welcome": "Welcome {name}",
     "story_empty_title": "Empty List Story",
-    "story_empty_desc": "List Story is Empty. Create your story and will be show here"
+    "story_empty_desc": "List Story is Empty. Create your story and will be show here",
+    "story_max_refresh": "Have reach maximum page"
 }
