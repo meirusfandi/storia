@@ -12,6 +12,20 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>The app needs user's location permission</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>The app needs user's location permission</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>The app needs location service permission</string>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>location</string>
+    </array>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to location when open.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs access to location when in the background.</string>
 	<key>CFBundleName</key>
 	<string>storia</string>
 	<key>NSCameraUsageDescription</key>
