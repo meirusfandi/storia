@@ -18,6 +18,7 @@ import 'package:storia/presentation/bloc/story_list_bloc.dart';
 import 'package:storia/presentation/widgets/generic_button.dart';
 import 'package:storia/presentation/widgets/page_template.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 
 @RoutePage()
 class StoryFormPage extends StatefulWidget {
@@ -234,18 +235,21 @@ class _StoryFormPageState extends State<StoryFormPage> {
     locationData = await location.getLocation();
     final latLng = LatLng(locationData.latitude!, locationData.longitude!);
 
-    defineMarker(latLng);
+    defineMarker(latLng, isMyLocation: true);
 
     mapController.animateCamera(
       CameraUpdate.newLatLng(latLng),
     );
   }
 
-  void defineMarker(LatLng latLng) {
-    final marker = Marker(
-      markerId: const MarkerId("myLocation"),
-      position: latLng,
-    );
+  void defineMarker(LatLng latLng, {bool isMyLocation = false}) async {
+    final myLocation = await getAddressFromLatLng(latLng);
+    final marker = (isMyLocation)
+        ? Marker(
+            markerId: const MarkerId("myLocation"),
+            position: latLng,
+            infoWindow: InfoWindow(title: myLocation))
+        : Marker(markerId: const MarkerId("myLocation"), position: latLng);
     setState(() {
       markers.clear();
       markers.add(marker);
@@ -379,6 +383,17 @@ class _StoryFormPageState extends State<StoryFormPage> {
         ],
       ),
     );
+  }
+
+  static Future<String?> getAddressFromLatLng(LatLng position) async {
+    try {
+      final info = await geo.placemarkFromCoordinates(
+          position.latitude, position.longitude);
+      geo.Placemark place = info[0];
+      return "${place.street}, ${place.subLocality},${place.subAdministrativeArea}, ${place.postalCode}";
+    } catch (e) {
+      return null;
+    }
   }
 
   _onCameraView() async {
