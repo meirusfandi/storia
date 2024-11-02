@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_route/annotations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -26,13 +24,14 @@ class DetailStoryPage extends StatefulWidget {
 }
 
 class _DetailStoryPageState extends State<DetailStoryPage> {
-  LatLng jakartaMaps = const LatLng(-6.1835423,106.8369984);
+  LatLng jakartaMaps = const LatLng(-6.1835423, 106.8369984);
   late GoogleMapController mapController;
   final Set<Marker> markers = {};
   MapType selectedMapType = MapType.normal;
   String address = "";
   geo.Placemark? placemark;
-  final DraggableScrollableController sheetController = DraggableScrollableController();
+  final DraggableScrollableController sheetController =
+      DraggableScrollableController();
 
   @override
   void initState() {
@@ -41,10 +40,9 @@ class _DetailStoryPageState extends State<DetailStoryPage> {
   }
 
   static Future<String?> getAddressFromLatLng(LatLng position) async {
-
     try {
-      final info =
-      await geo.placemarkFromCoordinates(position.latitude, position.longitude);
+      final info = await geo.placemarkFromCoordinates(
+          position.latitude, position.longitude);
       geo.Placemark place = info[0];
       return "${place.street}, ${place.subLocality},${place.subAdministrativeArea}, ${place.postalCode}";
     } catch (e) {
@@ -55,7 +53,7 @@ class _DetailStoryPageState extends State<DetailStoryPage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<StoryDetailBloc, StoryDetailState>(
-      builder: (context, state) {
+        builder: (context, state) {
       return PageTemplate(
           loading: state.isLoading,
           appBar: AppBar(
@@ -67,195 +65,221 @@ class _DetailStoryPageState extends State<DetailStoryPage> {
             elevation: 0.0,
           ),
           child: SafeArea(
-              child: (!state.isLoading && !(state.detailEntity?.error ?? false) && state.detailEntity != null)
+              child: (!state.isLoading &&
+                      !(state.detailEntity?.error ?? false) &&
+                      state.detailEntity != null)
                   ? Stack(
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height,
-                        child: GoogleMap(
-                          myLocationButtonEnabled: false,
-                          zoomControlsEnabled: false,
-                          mapToolbarEnabled: false,
-                          markers: markers,
-                          initialCameraPosition: CameraPosition(
-                            zoom: 12,
-                            target: jakartaMaps,
-                          ),
-                          mapType: selectedMapType,
-                          onMapCreated: (controller) {
-                            if (state.detailEntity?.story.lat != 0.0 && state.detailEntity?.story.lon != 0.0) {
-                              jakartaMaps = LatLng(state.detailEntity?.story.lat ?? 0.0 , state.detailEntity?.story.lon ?? 0.0);
-                              final marker = Marker(
-                                markerId: MarkerId(widget.storyId),
-                                position: LatLng(state.detailEntity?.story.lat ?? 0.0 , state.detailEntity?.story.lon ?? 0.0),
-                                onTap: () async {
-                                  final result = await getAddressFromLatLng(LatLng(state.detailEntity?.story.lat ?? 0.0 , state.detailEntity?.story.lon ?? 0.0)) ?? '';
-                                  setState(() {
-                                    address = result;
-                                  });
-                                },
-                              );
-                              setState(() {
-                                mapController = controller;
-                                mapController.animateCamera(
-                                    CameraUpdate.newLatLng(jakartaMaps)
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                          child: GoogleMap(
+                            myLocationButtonEnabled: false,
+                            zoomControlsEnabled: false,
+                            mapToolbarEnabled: false,
+                            markers: markers,
+                            initialCameraPosition: CameraPosition(
+                              zoom: 12,
+                              target: jakartaMaps,
+                            ),
+                            mapType: selectedMapType,
+                            onMapCreated: (controller) {
+                              if (state.detailEntity?.story.lat != 0.0 &&
+                                  state.detailEntity?.story.lon != 0.0) {
+                                jakartaMaps = LatLng(
+                                    state.detailEntity?.story.lat ?? 0.0,
+                                    state.detailEntity?.story.lon ?? 0.0);
+                                final marker = Marker(
+                                  markerId: MarkerId(widget.storyId),
+                                  position: LatLng(
+                                      state.detailEntity?.story.lat ?? 0.0,
+                                      state.detailEntity?.story.lon ?? 0.0),
+                                  onTap: () async {
+                                    final result = await getAddressFromLatLng(
+                                            LatLng(
+                                                state.detailEntity?.story.lat ??
+                                                    0.0,
+                                                state.detailEntity?.story.lon ??
+                                                    0.0)) ??
+                                        '';
+                                    setState(() {
+                                      address = result;
+                                    });
+                                  },
                                 );
-                                markers.add(marker);
-                              });
-                            } else {
-                              mapController = controller;
-                            }
-                          },
+                                setState(() {
+                                  mapController = controller;
+                                  mapController.animateCamera(
+                                      CameraUpdate.newLatLng(jakartaMaps));
+                                  markers.add(marker);
+                                });
+                              } else {
+                                mapController = controller;
+                              }
+                            },
+                          ),
                         ),
-                      ),
-                      Positioned(
-                        top: 16,
-                        right: 16,
-                        child: Column(
-                          children: [
-                            FloatingActionButton.small(
-                              onPressed: null,
-                              child: PopupMenuButton<MapType>(
-                                onSelected: (MapType item) {
-                                  setState(() {
-                                    selectedMapType = item;
-                                  });
+                        Positioned(
+                          top: 16,
+                          right: 16,
+                          child: Column(
+                            children: [
+                              FloatingActionButton.small(
+                                onPressed: null,
+                                child: PopupMenuButton<MapType>(
+                                  onSelected: (MapType item) {
+                                    setState(() {
+                                      selectedMapType = item;
+                                    });
+                                  },
+                                  offset: const Offset(0, 54),
+                                  icon: const Icon(Icons.layers_outlined),
+                                  itemBuilder: (BuildContext context) =>
+                                      <PopupMenuEntry<MapType>>[
+                                    const PopupMenuItem<MapType>(
+                                      value: MapType.normal,
+                                      child: Text('Normal'),
+                                    ),
+                                    const PopupMenuItem<MapType>(
+                                      value: MapType.satellite,
+                                      child: Text('Satellite'),
+                                    ),
+                                    const PopupMenuItem<MapType>(
+                                      value: MapType.terrain,
+                                      child: Text('Terrain'),
+                                    ),
+                                    const PopupMenuItem<MapType>(
+                                      value: MapType.hybrid,
+                                      child: Text('Hybrid'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              FloatingActionButton.small(
+                                heroTag: "zoom-in",
+                                onPressed: () {
+                                  mapController.animateCamera(
+                                    CameraUpdate.zoomIn(),
+                                  );
                                 },
-                                offset: const Offset(0, 54),
-                                icon: const Icon(Icons.layers_outlined),
-                                itemBuilder: (BuildContext context) =>
-                                <PopupMenuEntry<MapType>>[
-                                  const PopupMenuItem<MapType>(
-                                    value: MapType.normal,
-                                    child: Text('Normal'),
+                                child: const Icon(Icons.add),
+                              ),
+                              FloatingActionButton.small(
+                                heroTag: "zoom-out",
+                                onPressed: () {
+                                  mapController.animateCamera(
+                                    CameraUpdate.zoomOut(),
+                                  );
+                                },
+                                child: const Icon(Icons.remove),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            child: Center(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(32)),
+                                    color: ColorWidget.lightPrimaryColor),
+                                child: TextWidget.manropeRegular(
+                                        (address.isNotEmpty)
+                                            ? address
+                                            : AppLocalizations.of(context)
+                                                    ?.general_no_maps ??
+                                                '',
+                                        textAlign: TextAlign.center,
+                                        size: 14)
+                                    .padded(),
+                              ).padded(),
+                            ).horizontalPadded(60)),
+                        DraggableScrollableSheet(
+                          controller: sheetController,
+                          builder: (BuildContext context, scrollController) {
+                            return Container(
+                              clipBehavior: Clip.hardEdge,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).canvasColor,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16),
+                                ),
+                              ),
+                              child: CustomScrollView(
+                                controller: scrollController,
+                                slivers: [
+                                  SliverToBoxAdapter(
+                                    child: Center(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).hintColor,
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10)),
+                                        ),
+                                        height: 4,
+                                        width: 40,
+                                      ).padded(),
+                                    ),
                                   ),
-                                  const PopupMenuItem<MapType>(
-                                    value: MapType.satellite,
-                                    child: Text('Satellite'),
-                                  ),
-                                  const PopupMenuItem<MapType>(
-                                    value: MapType.terrain,
-                                    child: Text('Terrain'),
-                                  ),
-                                  const PopupMenuItem<MapType>(
-                                    value: MapType.hybrid,
-                                    child: Text('Hybrid'),
-                                  ),
+                                  SliverList.list(children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(16)),
+                                      child: CachedNetworkImage(
+                                        width: double.infinity,
+                                        height: 200,
+                                        fit: BoxFit.fill,
+                                        imageUrl: state
+                                                .detailEntity?.story.photoUrl ??
+                                            '',
+                                        placeholder: (context, url) =>
+                                            const SizedBox(
+                                                width: 48,
+                                                height: 48,
+                                                child:
+                                                    CircularProgressIndicator()),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
+                                      ).padded(),
+                                    ),
+                                    TextWidget.manropeBold(
+                                            state.detailEntity?.story.name ??
+                                                '',
+                                            size: 24)
+                                        .horizontalPadded()
+                                        .topPadded(),
+                                    TextWidget.manropeRegular(
+                                            DateHelper.parseDate(state
+                                                    .detailEntity
+                                                    ?.story
+                                                    .createdAt ??
+                                                ''),
+                                            size: 14)
+                                        .horizontalPadded(),
+                                    TextWidget.manropeSemiBold(
+                                            AppLocalizations.of(context)
+                                                    ?.story_detail_description ??
+                                                '',
+                                            size: 16)
+                                        .horizontalPadded()
+                                        .topPadded(),
+                                    TextWidget.manropeRegular(
+                                            state.detailEntity?.story
+                                                    .description ??
+                                                '',
+                                            size: 14)
+                                        .horizontalPadded(),
+                                  ])
                                 ],
                               ),
-                            ),
-                            FloatingActionButton.small(
-                              heroTag: "zoom-in",
-                              onPressed: () {
-                                mapController.animateCamera(
-                                  CameraUpdate.zoomIn(),
-                                );
-                              },
-                              child: const Icon(Icons.add),
-                            ),
-                            FloatingActionButton.small(
-                              heroTag: "zoom-out",
-                              onPressed: () {
-                                mapController.animateCamera(
-                                  CameraUpdate.zoomOut(),
-                                );
-                              },
-                              child: const Icon(Icons.remove),
-                            ),
-                          ],
+                            );
+                          },
                         ),
-                      ),
-                      if (state.detailEntity?.story.lat == 0.0 && state.detailEntity?.story.lon == 0.0) Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(Radius.circular(32)),
-                              color: ColorWidget.lightPrimaryColor
-                            ),
-                            child: TextWidget.manropeRegular(AppLocalizations.of(context)?.general_no_maps ?? '').padded(),
-                          ).padded(),
-                        )
-                      ),
-                      DraggableScrollableSheet(
-                        controller: sheetController,
-                        builder: (BuildContext context, scrollController) {
-                          return Container(
-                            clipBehavior: Clip.hardEdge,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).canvasColor,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(16),
-                                topRight: Radius.circular(16),
-                              ),
-                            ),
-                            child: CustomScrollView(
-                              controller: scrollController,
-                              slivers: [
-                                SliverToBoxAdapter(
-                                  child: Center(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).hintColor,
-                                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                      ),
-                                      height: 4,
-                                      width: 40,
-                                    ).padded(),
-                                  ),
-                                ),
-                                SliverList.list(children: [
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.all(Radius.circular(16)),
-                                    child: CachedNetworkImage(
-                                      width: double.infinity,
-                                      height: 200,
-                                      fit: BoxFit.fill,
-                                      imageUrl: state.detailEntity?.story.photoUrl ?? '',
-                                      placeholder: (context, url) => const SizedBox(
-                                          width: 48,
-                                          height: 48,
-                                          child: CircularProgressIndicator()),
-                                      errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                    ).padded(),
-                                  ),
-                                  TextWidget.manropeBold(
-                                      state.detailEntity?.story.name ?? '',
-                                      size: 24)
-                                      .horizontalPadded()
-                                      .topPadded(),
-                                  TextWidget.manropeRegular(
-                                      DateHelper.parseDate(
-                                          state.detailEntity?.story.createdAt ??
-                                              ''),
-                                      size: 14)
-                                      .horizontalPadded(),
-                                  TextWidget.manropeRegular(
-                                      address,
-                                      size: 14)
-                                      .horizontalPadded(),
-                                  TextWidget.manropeSemiBold(
-                                      AppLocalizations.of(context)
-                                          ?.story_detail_description ??
-                                          '',
-                                      size: 16)
-                                      .horizontalPadded()
-                                      .topPadded(),
-                                  TextWidget.manropeRegular(
-                                      state.detailEntity?.story.description ?? '',
-                                      size: 14)
-                                      .horizontalPadded(),
-                                ])
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  )
+                      ],
+                    )
                   : EmptyViewWidget(
                       title: AppLocalizations.of(context)
                               ?.story_detail_empty_label ??

@@ -49,5 +49,7 @@
     "general_error": "Something wrong, Please try again",
     "general_bahasa": "Indonesian",
     "general_english": "English",
-    "general_no_maps": "No Location Data"
+    "general_no_maps": "No Location Data",
+    "general_latitude": "Latitude",
+    "general_longitude": "Longitude"
 }

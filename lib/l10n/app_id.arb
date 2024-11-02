@@ -49,5 +49,7 @@
     "general_error": "Terjadi Kesalahan, Silahkan coba kembali",
     "general_bahasa": "Bahasa Indonesia",
     "general_english": "Bahasa Inggris",
-    "general_no_maps": "Tidak ada data lokasi"
+    "general_no_maps": "Tidak ada data lokasi",
+    "general_latitude": "Latitude",
+    "general_longitude": "Longitude"
 }
