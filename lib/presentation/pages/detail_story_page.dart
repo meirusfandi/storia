@@ -4,6 +4,7 @@ import 'package:auto_route/annotations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:storia/core/helper/date_helper.dart';
 import 'package:storia/core/resources/injection_container.dart';
@@ -30,6 +31,7 @@ class _DetailStoryPageState extends State<DetailStoryPage> {
   final Set<Marker> markers = {};
   MapType selectedMapType = MapType.normal;
   String address = "";
+  geo.Placemark? placemark;
   final DraggableScrollableController sheetController = DraggableScrollableController();
 
   @override
@@ -38,28 +40,22 @@ class _DetailStoryPageState extends State<DetailStoryPage> {
     super.initState();
   }
 
+  static Future<String?> getAddressFromLatLng(LatLng position) async {
+
+    try {
+      final info =
+      await geo.placemarkFromCoordinates(position.latitude, position.longitude);
+      geo.Placemark place = info[0];
+      return "${place.street}, ${place.subLocality},${place.subAdministrativeArea}, ${place.postalCode}";
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<StoryDetailBloc, StoryDetailState>(
-      listener: (context, state) {
-        if (!state.isLoading && state.detailEntity != null) {
-          if (state.detailEntity?.story.lat != 0.0 && state.detailEntity?.story.lon != 0.0) {
-            jakartaMaps = LatLng(state.detailEntity?.story.lat ?? 0.0 , state.detailEntity?.story.lon ?? 0.0);
-            final marker = Marker(
-              markerId: MarkerId(widget.storyId),
-              position: LatLng(state.detailEntity?.story.lat ?? 0.0 , state.detailEntity?.story.lon ?? 0.0),
-              onTap: () async {
-                log('test click');
-              },
-            );
-            markers.add(marker);
-            mapController.animateCamera(
-              CameraUpdate.newLatLng(jakartaMaps)
-            );
-          }
-        }
-      },
-        builder: (context, state) {
+    return BlocBuilder<StoryDetailBloc, StoryDetailState>(
+      builder: (context, state) {
       return PageTemplate(
           loading: state.isLoading,
           appBar: AppBar(
@@ -71,7 +67,7 @@ class _DetailStoryPageState extends State<DetailStoryPage> {
             elevation: 0.0,
           ),
           child: SafeArea(
-              child: !(state.detailEntity?.error ?? false)
+              child: (!state.isLoading && !(state.detailEntity?.error ?? false) && state.detailEntity != null)
                   ? Stack(
                     children: [
                       SizedBox(
@@ -87,7 +83,28 @@ class _DetailStoryPageState extends State<DetailStoryPage> {
                           ),
                           mapType: selectedMapType,
                           onMapCreated: (controller) {
-                            mapController = controller;
+                            if (state.detailEntity?.story.lat != 0.0 && state.detailEntity?.story.lon != 0.0) {
+                              jakartaMaps = LatLng(state.detailEntity?.story.lat ?? 0.0 , state.detailEntity?.story.lon ?? 0.0);
+                              final marker = Marker(
+                                markerId: MarkerId(widget.storyId),
+                                position: LatLng(state.detailEntity?.story.lat ?? 0.0 , state.detailEntity?.story.lon ?? 0.0),
+                                onTap: () async {
+                                  final result = await getAddressFromLatLng(LatLng(state.detailEntity?.story.lat ?? 0.0 , state.detailEntity?.story.lon ?? 0.0)) ?? '';
+                                  setState(() {
+                                    address = result;
+                                  });
+                                },
+                              );
+                              setState(() {
+                                mapController = controller;
+                                mapController.animateCamera(
+                                    CameraUpdate.newLatLng(jakartaMaps)
+                                );
+                                markers.add(marker);
+                              });
+                            } else {
+                              mapController = controller;
+                            }
                           },
                         ),
                       ),
